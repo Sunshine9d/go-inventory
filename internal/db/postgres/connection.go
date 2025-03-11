@@ -3,6 +3,8 @@ package postgres
 import (
 	"database/sql"
 	"fmt"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 	"log"
 	"os"
 
@@ -10,7 +12,7 @@ import (
 )
 
 // NewConnection initializes a new PostgreSQL database connection
-func NewConnection() (*sql.DB, error) {
+func NewConnection() (*sql.DB, *gorm.DB, error) {
 	// Get PostgreSQL credentials from environment variables
 	user := os.Getenv("POSTGRES_USER")
 	password := os.Getenv("POSTGRES_PASSWORD")
@@ -21,7 +23,7 @@ func NewConnection() (*sql.DB, error) {
 
 	// Validate required environment variables
 	if user == "" || password == "" || host == "" || port == "" || dbname == "" {
-		return nil, fmt.Errorf("❌ missing required PostgreSQL environment variables")
+		return nil, nil, fmt.Errorf("❌ missing required PostgreSQL environment variables")
 	}
 
 	// Format PostgreSQL connection string
@@ -29,16 +31,19 @@ func NewConnection() (*sql.DB, error) {
 		user, password, host, port, dbname, sslmode)
 
 	// Open PostgreSQL connection
-	db, err := sql.Open("postgres", connectionString)
+	sqlDB, err := sql.Open("postgres", connectionString)
 	if err != nil {
-		return nil, fmt.Errorf("❌ failed to open PostgreSQL connection: %w", err)
+		return nil, nil, fmt.Errorf("❌ failed to open PostgreSQL connection: %w", err)
 	}
 
 	// Verify connection
-	if err = db.Ping(); err != nil {
-		return nil, fmt.Errorf("❌ failed to ping PostgreSQL: %w", err)
+	if err = sqlDB.Ping(); err != nil {
+		return nil, nil, fmt.Errorf("❌ failed to ping PostgreSQL: %w", err)
 	}
-
+	gormDB, err := gorm.Open(mysql.Open(connectionString), &gorm.Config{})
+	if err != nil {
+		return nil, nil, err
+	}
 	log.Println("✅ Connected to PostgreSQL successfully!")
-	return db, nil
+	return sqlDB, gormDB, nil
 }

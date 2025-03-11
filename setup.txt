@@ -1,2 +1,85 @@
+go-inventory/
+│── .env
+│── .gitignore
+│── go.mod
+│── go.sum
+│── main.go
+│
+├── config/                  # 🛠 Configuration files
+│   ├── config.go            # Load environment variables
+│
+├── internal/                # 🔥 Core application logic
+│   ├── db/                  # Database logic
+│   │   ├── db.go            # Get database connection
+│   │   ├── mysql/
+│   │   │   ├── connection.go # MySQL connection setup
+│   │   │   ├── product_repo.go # MySQL Product Repository
+│   │   │   ├── order_repo.go   # MySQL Order Repository
+│   │   ├── postgres/
+│   │   │   ├── connection.go # PostgreSQL connection setup
+│   │   │   ├── product_repo.go # PostgreSQL Product Repository
+│   │   │   ├── order_repo.go   # PostgreSQL Order Repository
+│
+│   ├── products/             # 📦 Product domain logic
+│   │   ├── routes.go         # Product routes
+│   │   ├── repository.go     # Product repository interface
+│   │   ├── service.go        # Business logic for products
+│   │   ├── handler.go        # HTTP handlers for products
+│
+│   ├── orders/               # 📦 Order domain logic
+│   │   ├── routes.go         # Order routes
+│   │   ├── repository.go     # Order repository interface
+│   │   ├── service.go        # Business logic for orders
+│   │   ├── handler.go        # HTTP handlers for orders
+│
+│   ├── utils/                # 🔧 Utility functions
+│   │   ├── response.go       # Helper for JSON responses
+│
+└── pkg/                      # 🏗 External libraries or helper functions
+
+
 export DB_TYPE=mysql
 go run cmd/server/main.go
+
+CREATE TABLE products ( id INT AUTO_INCREMENT PRIMARY KEY, name VARCHAR(255) NOT NULL, quantity INT NOT NULL, price INT NOT NULL );
+
+INSERT INTO products (name, quantity, price)
+SELECT
+    CONCAT('Product ', FLOOR(RAND() * 1000)),  -- Random product name
+    FLOOR(RAND() * 100) + 1,  -- Random quantity (1-100)
+    ROUND(RAND() * 500, 2)  -- Random price (0-500)
+FROM (SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5) AS t1,
+     (SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5) AS t2,
+     (SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5) AS t3,
+     (SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5) AS t4;
+
+
+CREATE TABLE orders (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    product_id INT NOT NULL,
+    customer_name VARCHAR(255) NOT NULL,
+    total_price DECIMAL(10,2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+);
+
+INSERT INTO orders (product_id, customer_name, total_price)
+SELECT
+    id AS product_id,
+    CONCAT('Customer ', FLOOR(RAND() * 1000)) AS customer_name,
+    ROUND(RAND() * 100 + 10, 2) AS total_price
+FROM products
+ORDER BY RAND()
+LIMIT 10;
+
+
+postgres
+
+CREATE TABLE orders (
+    id SERIAL PRIMARY KEY,
+    product_id INT NOT NULL,
+    customer_name VARCHAR(255) NOT NULL,
+    total_price DECIMAL(10,2) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT fk_product FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+);

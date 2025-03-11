@@ -3,24 +3,25 @@ package mysql
 import (
 	"database/sql"
 	"fmt"
+	_ "github.com/go-sql-driver/mysql" // Import MySQL driver
+	mysql "gorm.io/driver/mysql"
+	"gorm.io/gorm"
 	"log"
 	"os"
-
-	_ "github.com/go-sql-driver/mysql" // Import MySQL driver
 )
 
 // NewConnection initializes a new MySQL database connection
-func NewConnection() (*sql.DB, error) {
+func NewConnection() (*sql.DB, *gorm.DB, error) {
 	// Get MySQL credentials from environment variables
 	user := os.Getenv("MYSQL_USER")
 	password := os.Getenv("MYSQL_PASSWORD")
 	host := os.Getenv("MYSQL_HOST")
 	port := os.Getenv("MYSQL_PORT")
 	dbname := os.Getenv("MYSQL_DB")
-
+	fmt.Println(user, password, host, port, dbname)
 	// Validate required environment variables
 	if user == "" || password == "" || host == "" || port == "" || dbname == "" {
-		return nil, fmt.Errorf("❌ missing required MySQL environment variables")
+		return nil, nil, fmt.Errorf("❌ missing required MySQL environment variables")
 	}
 
 	// Format MySQL connection string
@@ -28,16 +29,21 @@ func NewConnection() (*sql.DB, error) {
 		user, password, host, port, dbname)
 
 	// Open MySQL connection
-	db, err := sql.Open("mysql", connectionString)
+	sqlDB, err := sql.Open("mysql", connectionString)
 	if err != nil {
-		return nil, fmt.Errorf("❌ failed to open MySQL connection: %w", err)
+		return nil, nil, fmt.Errorf("❌ failed to open MySQL connection: %w", err)
 	}
 
 	// Verify connection
-	if err = db.Ping(); err != nil {
-		return nil, fmt.Errorf("❌ failed to ping MySQL: %w", err)
+	if err = sqlDB.Ping(); err != nil {
+		return nil, nil, fmt.Errorf("❌ failed to ping MySQL: %w", err)
+	}
+
+	gormDB, err := gorm.Open(mysql.Open(connectionString), &gorm.Config{})
+	if err != nil {
+		return nil, nil, err
 	}
 
 	log.Println("✅ Connected to MySQL successfully!")
-	return db, nil
+	return sqlDB, gormDB, nil
 }

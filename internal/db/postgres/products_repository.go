@@ -3,16 +3,29 @@ package postgres
 import (
 	"database/sql"
 	"github.com/Sunshine9d/go-inventory/internal/products"
+	"gorm.io/gorm"
 )
 
 // PostgresProductRepository handles PostgreSQL-specific queries
 type PostgresProductRepository struct {
-	DB *sql.DB
+	DB    *gorm.DB
+	SQLDB *sql.DB
 }
 
-func (r *PostgresProductRepository) GetProducts(limit, offset int, name string) ([]products.Product, error) {
-	query := `SELECT id, name, quantity, price FROM products WHERE name ILIKE $1 LIMIT $2 OFFSET $3`
-	rows, err := r.DB.Query(query, "%"+name+"%", limit, offset)
+// GetProductByID fetches a product using GORM
+func (r *PostgresProductRepository) GetProductByID(id int) (*products.Product, error) {
+	var p products.Product
+	err := r.DB.First(&p, id).Error
+	if err != nil {
+		return nil, err
+	}
+	return &p, nil
+}
+
+// GetProducts fetches all products using raw SQL (native query)
+func (r *PostgresProductRepository) GetProducts() ([]products.Product, error) {
+	query := "SELECT id, name, quantity, price FROM products"
+	rows, err := r.SQLDB.Query(query)
 	if err != nil {
 		return nil, err
 	}
@@ -27,6 +40,9 @@ func (r *PostgresProductRepository) GetProducts(limit, offset int, name string) 
 		productsList = append(productsList, p)
 	}
 
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
 	return productsList, nil
 }
 
