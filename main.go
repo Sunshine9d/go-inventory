@@ -3,11 +3,14 @@ package main
 import (
 	"fmt"
 	"github.com/Sunshine9d/go-inventory/config"
+	"log"
 )
 
 func main() {
-	app := config.App{}
-	app.Initialize(config.DbUser, config.DbPassword, config.DbName)
+	app, err := config.InitializeApp(config.DbUser, config.DbPassword, config.DbName)
+	if err != nil {
+		log.Fatal("Failed to initialize app:", err)
+	}
 	fmt.Println("Server is running on", config.DbHost)
-	app.Run(config.DbHost)
+	config.RunApp(app, ":8088")
 }

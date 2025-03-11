@@ -1,0 +1,2 @@
+export DB_TYPE=mysql
+go run cmd/server/main.go

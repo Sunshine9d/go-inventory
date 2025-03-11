@@ -12,6 +12,10 @@ type App struct {
 	DB     *sql.DB
 }
 
+func (app *App) InitRoutes() {
+	app.productRoutes()
+}
+
 func sendResponse(writer http.ResponseWriter, status int, data interface{}) {
 	response, _ := json.Marshal(data)
 	writer.Header().Set("Content-Type", "application/json")
