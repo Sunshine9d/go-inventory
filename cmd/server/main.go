@@ -1,24 +1,19 @@
 package main
 
 import (
-	"log"
-	"net/http"
-
-	"github.com/gorilla/mux"
-	"github.com/joho/godotenv"
-
 	"github.com/Sunshine9d/go-inventory/internal/db"
 	"github.com/Sunshine9d/go-inventory/internal/orders"
 	"github.com/Sunshine9d/go-inventory/internal/products"
-	"github.com/Sunshine9d/go-inventory/internal/services"
+	"github.com/gorilla/mux"
+	"github.com/joho/godotenv"
+	"log"
+	"net/http"
 )
 
 func main() {
-
-	// Load environment variables
-	err := godotenv.Load()
-	if err != nil {
-		log.Println("Warning: No .env file found, using system environment variables.")
+	// Load .env file
+	if err := godotenv.Load(); err != nil {
+		log.Println("⚠️ Warning: No .env file found. Using system environment variables.")
 	}
 
 	// Initialize repositories
@@ -27,18 +22,22 @@ func main() {
 		log.Fatal("❌", err)
 	}
 
-	orderRepo, err := db.GetOrderRepository() // Example for another service
+	orderRepo, err := db.GetOrderRepository()
 	if err != nil {
 		log.Fatal("❌", err)
 	}
-
-	// Initialize services and handlers
-	_, handlers := services.InitializeServices(productRepo, orderRepo)
-
+	// Run database migrations
+	db.MigrateDB()
+	// Initialize services
+	productService := &products.Service{Repo: productRepo}
+	orderService := &orders.Service{Repo: orderRepo}
+	// Initialize handlers
+	productHandler := &products.Handler{Service: productService}
+	orderHandler := &orders.Handler{Service: orderService}
 	// Setup routes
 	router := mux.NewRouter()
-	products.RegisterRoutes(router, handlers.ProductHandler)
-	orders.RegisterRoutes(router, handlers.OrderHandler) // Example
+	products.RegisterRoutes(router, productHandler)
+	orders.RegisterRoutes(router, orderHandler)
 
 	// Start server
 	log.Println("🚀 Server running on port 8088...")

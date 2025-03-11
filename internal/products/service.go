@@ -5,7 +5,7 @@ type Service struct {
 }
 
 func (s *Service) GetProducts() ([]Product, error) {
-	return s.Repo.GetProducts(0, 0, "")
+	return s.Repo.GetProducts(10, 1, "")
 }
 
 func (s *Service) GetProductByID(id int) (Product, error) {

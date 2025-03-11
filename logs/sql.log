@@ -1,0 +1,2 @@
+[DB_LOG] 2025/03/11 14:38:41 logger.go:37: SQL: SELECT id, name, quantity, price FROM products LIMIT ? OFFSET ? | ARGS: []
+[DB_LOG] 2025/03/11 14:40:30 logger.go:37: SQL: SELECT * FROM products WHERE id = ? | ARGS: [1]
