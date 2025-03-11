@@ -1,2 +1,50 @@
 [DB_LOG] 2025/03/11 14:38:41 logger.go:37: SQL: SELECT id, name, quantity, price FROM products LIMIT ? OFFSET ? | ARGS: []
 [DB_LOG] 2025/03/11 14:40:30 logger.go:37: SQL: SELECT * FROM products WHERE id = ? | ARGS: [1]
+[DB_LOG] 2025/03/11 15:35:18 order_repository.go:19: 📌 Executing Query: SELECT id, customer_name, total_price FROM orders LIMIT $1 OFFSET $2
+[DB_LOG] 2025/03/11 15:35:18 logger.go:37: SQL: SELECT id, customer_name, total_price FROM orders LIMIT $1 OFFSET $2 | ARGS: []
+[DB_LOG] 2025/03/11 15:43:21 order_repository.go:19: 📌 Executing Query: SELECT id, customer_name, total_price FROM orders LIMIT $1 OFFSET $2
+[DB_LOG] 2025/03/11 15:43:21 logger.go:37: SQL: SELECT id, customer_name, total_price FROM orders LIMIT $1 OFFSET $2 | ARGS: []
+[DB_LOG] 2025/03/11 15:43:23 order_repository.go:19: 📌 Executing Query: SELECT id, customer_name, total_price FROM orders LIMIT $1 OFFSET $2
+[DB_LOG] 2025/03/11 15:43:23 logger.go:37: SQL: SELECT id, customer_name, total_price FROM orders LIMIT $1 OFFSET $2 | ARGS: []
+[DB_LOG] 2025/03/11 15:43:29 order_repository.go:19: 📌 Executing Query: SELECT id, customer_name, total_price FROM orders LIMIT $1 OFFSET $2
+[DB_LOG] 2025/03/11 15:43:29 logger.go:37: SQL: SELECT id, customer_name, total_price FROM orders LIMIT $1 OFFSET $2 | ARGS: []
+[DB_LOG] 2025/03/11 15:44:49 order_repository.go:19: 📌 Executing Query: SELECT id, customer_name, total_price FROM orders LIMIT $1 OFFSET $2
+[DB_LOG] 2025/03/11 15:44:49 logger.go:37: SQL: SELECT id, customer_name, total_price FROM orders LIMIT $1 OFFSET $2 | ARGS: []
+[DB_LOG] 2025/03/11 15:45:12 order_repository.go:19: 📌 Executing Query: SELECT id, customer_name, total_price FROM orders LIMIT $1 OFFSET $2
+[DB_LOG] 2025/03/11 15:45:12 logger.go:37: SQL: SELECT id, customer_name, total_price FROM orders LIMIT $1 OFFSET $2 | ARGS: []
+[DB_LOG] 2025/03/11 15:45:17 order_repository.go:19: 📌 Executing Query: SELECT id, customer_name, total_price FROM orders LIMIT $1 OFFSET $2
+[DB_LOG] 2025/03/11 15:45:17 logger.go:37: SQL: SELECT id, customer_name, total_price FROM orders LIMIT $1 OFFSET $2 | ARGS: []
+[DB_LOG] 2025/03/11 15:46:29 order_repository.go:19: 📌 Executing Query: SELECT id, customer_name, total_price FROM orders LIMIT $1 OFFSET $2
+[DB_LOG] 2025/03/11 15:46:29 logger.go:37: SQL: SELECT id, customer_name, total_price FROM orders LIMIT $1 OFFSET $2 | ARGS: []
+[DB_LOG] 2025/03/11 15:46:39 order_repository.go:19: 📌 Executing Query: SELECT id, customer_name, total_price FROM orders LIMIT $1 OFFSET $2
+[DB_LOG] 2025/03/11 15:46:39 logger.go:37: SQL: SELECT id, customer_name, total_price FROM orders LIMIT $1 OFFSET $2 | ARGS: []
+[DB_LOG] 2025/03/11 15:47:55 order_repository.go:19: 📌 Executing Query: SELECT id, customer_name, total_price FROM orders LIMIT $1 OFFSET $2
+[DB_LOG] 2025/03/11 15:47:55 logger.go:37: SQL: SELECT id, customer_name, total_price FROM orders LIMIT $1 OFFSET $2 | ARGS: []
+[DB_LOG] 2025/03/11 15:49:39 order_repository.go:19: 📌 Executing Query: SELECT id, customer_name, total_price FROM orders LIMIT $1 OFFSET $2
+[DB_LOG] 2025/03/11 15:49:39 logger.go:37: SQL: SELECT id, customer_name, total_price FROM orders LIMIT $1 OFFSET $2 | ARGS: []
+[DB_LOG] 2025/03/11 15:50:39 order_repository.go:19: 📌 Executing Query: SELECT id, customer_name, total_price FROM orders LIMIT $1 OFFSET $2
+[DB_LOG] 2025/03/11 15:50:39 logger.go:37: SQL: SELECT id, customer_name, total_price FROM orders LIMIT $1 OFFSET $2 | ARGS: []
+[DB_LOG] 2025/03/11 15:51:17 order_repository.go:19: 📌 Executing Query: SELECT id, customer_name, total_price FROM orders LIMIT $1 OFFSET $2
+[DB_LOG] 2025/03/11 15:51:17 logger.go:37: SQL: SELECT id, customer_name, total_price FROM orders LIMIT $1 OFFSET $2 | ARGS: []
+[DB_LOG] 2025/03/11 15:52:06 order_repository.go:19: 📌 Executing Query: SELECT id, customer_name, total_price FROM orders LIMIT $1 OFFSET $2
+[DB_LOG] 2025/03/11 15:52:06 logger.go:37: SQL: SELECT id, customer_name, total_price FROM orders LIMIT $1 OFFSET $2 | ARGS: []
+[DB_LOG] 2025/03/11 15:53:31 order_repository.go:19: 📌 Executing Query: SELECT id, customer_name, total_price FROM orders LIMIT $1 OFFSET $2
+[DB_LOG] 2025/03/11 15:53:31 logger.go:37: SQL: SELECT id, customer_name, total_price FROM orders LIMIT $1 OFFSET $2 | ARGS: []
+[DB_LOG] 2025/03/11 15:55:19 order_repository.go:21: 📌 Executing Query: SELECT id, customer_name, total_price FROM orders LIMIT $1 OFFSET $2
+[DB_LOG] 2025/03/11 15:55:19 logger.go:37: SQL: SELECT id, customer_name, total_price FROM orders LIMIT $1 OFFSET $2 | ARGS: []
+[DB_LOG] 2025/03/11 15:57:13 order_repository.go:21: 📌 Executing Query: SELECT id, customer_name, total_price FROM orders LIMIT $1 OFFSET $2
+[DB_LOG] 2025/03/11 15:57:13 logger.go:37: SQL: SELECT id, customer_name, total_price FROM orders LIMIT $1 OFFSET $2 | ARGS: []
+[DB_LOG] 2025/03/11 16:01:26 order_repository.go:21: 📌 Executing Query: SELECT id, customer_name, total_price FROM orders LIMIT $1 OFFSET $2
+[DB_LOG] 2025/03/11 16:01:26 logger.go:37: SQL: SELECT id, customer_name, total_price FROM orders LIMIT $1 OFFSET $2 | ARGS: []
+[DB_LOG] 2025/03/11 16:03:02 order_repository.go:21: 📌 Executing Query: SELECT id, customer_name, total_price FROM orders LIMIT $1 OFFSET $2
+[DB_LOG] 2025/03/11 16:03:02 logger.go:37: SQL: SELECT id, customer_name, total_price FROM orders LIMIT $1 OFFSET $2 | ARGS: []
+[DB_LOG] 2025/03/11 16:14:37 order_repository.go:21: 📌 Executing Query: SELECT id, customer_name, total_price FROM orders LIMIT ? OFFSET ?
+[DB_LOG] 2025/03/11 16:14:37 logger.go:37: SQL: SELECT id, customer_name, total_price FROM orders LIMIT ? OFFSET ? | ARGS: []
+[DB_LOG] 2025/03/11 16:15:29 order_repository.go:21: 📌 Executing Query: SELECT id, customer_name, total_price FROM orders LIMIT ? OFFSET ?
+[DB_LOG] 2025/03/11 16:15:29 logger.go:37: SQL: SELECT id, customer_name, total_price FROM orders LIMIT ? OFFSET ? | ARGS: []
+[DB_LOG] 2025/03/11 16:15:33 order_repository.go:21: 📌 Executing Query: SELECT id, customer_name, total_price FROM orders LIMIT ? OFFSET ?
+[DB_LOG] 2025/03/11 16:15:33 logger.go:37: SQL: SELECT id, customer_name, total_price FROM orders LIMIT ? OFFSET ? | ARGS: []
+[DB_LOG] 2025/03/11 16:16:20 order_repository.go:21: 📌 Executing Query: SELECT id, customer_name, total_price FROM orders LIMIT ? OFFSET ?
+[DB_LOG] 2025/03/11 16:16:20 logger.go:37: SQL: SELECT id, customer_name, total_price FROM orders LIMIT ? OFFSET ? | ARGS: []
+[DB_LOG] 2025/03/11 16:30:29 order_repository.go:19: 📌 Executing Query: SELECT id, customer_name, total_price FROM orders LIMIT ? OFFSET ?
+[DB_LOG] 2025/03/11 16:30:29 logger.go:37: SQL: SELECT id, customer_name, total_price FROM orders LIMIT ? OFFSET ? | ARGS: []

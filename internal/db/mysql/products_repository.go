@@ -2,7 +2,6 @@ package mysql
 
 import (
 	"database/sql"
-	"fmt"
 	"github.com/Sunshine9d/go-inventory/internal/products"
 	"github.com/Sunshine9d/go-inventory/internal/repository"
 	"github.com/Sunshine9d/go-inventory/pkg/logger"
@@ -18,7 +17,6 @@ type MySQLProductRepository struct {
 
 // GetProducts fetches all products using raw SQL (native query)
 func (r *MySQLProductRepository) GetProducts(limit, offset int, name string) ([]products.Product, error) {
-	fmt.Println("Native query")
 	// Base query
 	query := "SELECT id, name, quantity, price FROM products"
 	var args []interface{}
@@ -54,4 +52,11 @@ func (r *MySQLProductRepository) GetProducts(limit, offset int, name string) ([]
 		return nil, err
 	}
 	return productsList, nil
+}
+
+func (r *MySQLProductRepository) GetTotalValue() (float64, error) {
+	query := "SELECT SUM(quantity * price) FROM products"
+	var totalValue float64
+	err := r.SQLDB.QueryRow(query).Scan(&totalValue)
+	return totalValue, err
 }

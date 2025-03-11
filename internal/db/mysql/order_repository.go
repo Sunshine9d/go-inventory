@@ -2,25 +2,23 @@ package mysql
 
 import (
 	"database/sql"
+	"github.com/Sunshine9d/go-inventory/internal/orders"
 	"github.com/Sunshine9d/go-inventory/internal/repository"
 	"github.com/Sunshine9d/go-inventory/pkg/logger"
 	"gorm.io/gorm"
-	"log"
-
-	"github.com/Sunshine9d/go-inventory/internal/orders"
 )
 
 type MySQLOrderRepository struct {
 	DB    *gorm.DB
 	SQLDB *sql.DB
-	*repository.GormProductRepository
+	*repository.GormOrderRepository
 }
 
-func (repo *MySQLOrderRepository) GetOrders() ([]orders.Order, error) {
-	query := "SELECT id, customer_name, total_price FROM orders"
-	rows, err := repo.SQLDB.Query(query)
-	// Log query to file
+func (r *MySQLOrderRepository) GetOrders(limit, offset int) ([]orders.Order, error) {
+	query := "SELECT id, customer_name, total_price FROM orders LIMIT ? OFFSET ?"
+	logger.Logger.Printf("📌 Executing Query: %s", query)
 	logger.LogQuery(query)
+	rows, err := r.SQLDB.Query(query, limit, offset)
 	if err != nil {
 		return nil, err
 	}
@@ -30,10 +28,13 @@ func (repo *MySQLOrderRepository) GetOrders() ([]orders.Order, error) {
 	for rows.Next() {
 		var order orders.Order
 		if err := rows.Scan(&order.ID, &order.CustomerName, &order.TotalPrice); err != nil {
-			log.Println("Error scanning order:", err)
-			continue
+			return nil, err
 		}
 		orderList = append(orderList, order)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
 	}
 	return orderList, nil
 }

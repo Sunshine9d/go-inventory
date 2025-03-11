@@ -24,7 +24,6 @@ type DBConnection struct {
 // NewConnection initializes a database connection based on DB_TYPE
 func NewConnection() (*DBConnection, error) {
 	dbType := os.Getenv("DB_TYPE")
-
 	// Read environment variables
 	user := os.Getenv("DB_USER")
 	password := os.Getenv("DB_PASSWORD")
@@ -35,13 +34,11 @@ func NewConnection() (*DBConnection, error) {
 	var sqlDB *sql.DB
 	var gormDB *gorm.DB
 	var err error
-
 	switch dbType {
 	case "mysql":
 		dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 			user, password, host, port, dbname) // ✅ Add dbname here
 
-		fmt.Println(dsn)
 		sqlDB, err = sql.Open("mysql", dsn)
 		if err != nil {
 			return nil, fmt.Errorf("failed to connect to MySQL: %w", err)

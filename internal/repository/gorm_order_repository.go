@@ -1,6 +1,7 @@
 package repository
 
 import (
+	"github.com/Sunshine9d/go-inventory/internal/orders"
 	"gorm.io/gorm"
 )
 
@@ -8,13 +9,20 @@ type GormOrderRepository struct {
 	DB *gorm.DB
 }
 
-// GetProductByID fetches a product using GORM
-//func (r *GormProductRepository) GetProductByID(id int) (products.Product, error) {
-//	fmt.Println("GORM query")
-//	var p products.Product
-//	err := r.DB.First(&p, id).Error
-//	if err != nil {
-//		return p, err
-//	}
-//	return p, nil
-//}
+func (r *GormOrderRepository) CreateOrder(order *orders.Order) error {
+	return r.DB.Create(order).Error
+}
+
+func (r *GormOrderRepository) UpdateOrder(order *orders.Order) error {
+	return r.DB.Save(order).Error
+}
+
+func (r *GormOrderRepository) DeleteOrder(id int) error {
+	return r.DB.Delete(&orders.Order{}, id).Error
+}
+
+func (r *GormOrderRepository) GetOrderByID(id int) (orders.Order, error) {
+	var order orders.Order
+	err := r.DB.First(&order, id).Error
+	return order, err
+}

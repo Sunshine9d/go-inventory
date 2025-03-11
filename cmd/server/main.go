@@ -15,13 +15,12 @@ func main() {
 	if err := godotenv.Load(); err != nil {
 		log.Println("⚠️ Warning: No .env file found. Using system environment variables.")
 	}
-
 	// Initialize repositories
 	productRepo, err := db.GetProductRepository()
 	if err != nil {
 		log.Fatal("❌", err)
 	}
-
+	// Initialize repositories
 	orderRepo, err := db.GetOrderRepository()
 	if err != nil {
 		log.Fatal("❌", err)
@@ -38,7 +37,6 @@ func main() {
 	router := mux.NewRouter()
 	products.RegisterRoutes(router, productHandler)
 	orders.RegisterRoutes(router, orderHandler)
-
 	// Start server
 	log.Println("🚀 Server running on port 8088...")
 	log.Fatal(http.ListenAndServe(":8088", router))
