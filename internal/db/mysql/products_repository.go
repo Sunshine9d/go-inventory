@@ -18,7 +18,7 @@ type MySQLProductRepository struct {
 // GetProducts fetches all products using raw SQL (native query)
 func (r *MySQLProductRepository) GetProducts(limit, offset int, name string) ([]products.Product, error) {
 	// Base query
-	query := "SELECT id, name, quantity, price FROM products"
+	query := "SELECT id, name, sku, price FROM products"
 	var args []interface{}
 
 	// Add name filtering if provided
@@ -42,7 +42,7 @@ func (r *MySQLProductRepository) GetProducts(limit, offset int, name string) ([]
 	var productsList []products.Product
 	for rows.Next() {
 		var p products.Product
-		if err := rows.Scan(&p.ID, &p.Name, &p.Quantity, &p.Price); err != nil {
+		if err := rows.Scan(&p.ID, &p.Name, &p.Sku, &p.Price); err != nil {
 			return nil, err
 		}
 		productsList = append(productsList, p)

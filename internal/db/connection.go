@@ -54,7 +54,7 @@ func NewConnection() (*DBConnection, error) {
 	case "postgres":
 		dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 			host, port, user, password, dbname)
-
+		fmt.Println(dsn)
 		sqlDB, err = sql.Open("postgres", dsn)
 		if err != nil {
 			return nil, fmt.Errorf("failed to connect to PostgreSQL: %w", err)
