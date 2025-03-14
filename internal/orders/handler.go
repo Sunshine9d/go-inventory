@@ -13,15 +13,36 @@ type Handler struct {
 }
 
 func (h *Handler) GetOrders(w http.ResponseWriter, r *http.Request) {
+	// Parse query parameters
 	limit, offset := getLimitOffset(r)
-	orders, err := h.Service.GetOrders(limit, offset)
+
+	var id *int
+	if idParam := r.URL.Query().Get("id"); idParam != "" {
+		parsedID, err := strconv.Atoi(idParam)
+		if err != nil {
+			http.Error(w, "Invalid ID parameter", http.StatusBadRequest)
+			return
+		}
+		id = &parsedID
+	}
+
+	var customerName *string
+	if nameParam := r.URL.Query().Get("customer_name"); nameParam != "" {
+		customerName = &nameParam
+	}
+
+	// Fetch orders
+	orders, err := h.Service.GetOrders(limit, offset, id, customerName)
 	if err != nil {
 		http.Error(w, "Failed to fetch orders", http.StatusInternalServerError)
 		return
 	}
 
+	// Set JSON response header and encode response
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(orders)
+	if err := json.NewEncoder(w).Encode(orders); err != nil {
+		http.Error(w, "Failed to encode response", http.StatusInternalServerError)
+	}
 }
 
 func (h *Handler) GetOrderByID(w http.ResponseWriter, r *http.Request) {

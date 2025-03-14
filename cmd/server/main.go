@@ -37,7 +37,7 @@ func main() {
 	}
 
 	// Run database migrations
-	db.MigrateDB()
+	//db.MigrateDB()
 
 	// Initialize services
 	productService := &products.Service{Repo: productRepo}

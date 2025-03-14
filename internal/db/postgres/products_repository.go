@@ -1,12 +1,14 @@
 package postgres
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"github.com/Sunshine9d/go-inventory/internal/products"
 	"github.com/Sunshine9d/go-inventory/internal/repository"
 	"gorm.io/gorm"
 	"log"
+	"strings"
 )
 
 // PostgresProductRepository handles PostgreSQL-specific queries
@@ -17,45 +19,93 @@ type PostgresProductRepository struct {
 }
 
 // GetProducts fetches all products using raw SQL (native query)
-func (r *PostgresProductRepository) GetProducts(limit, offset int, name string) ([]products.Product, error) {
+func (r *PostgresProductRepository) GetProducts(limit, offset int, name string) (map[string]interface{}, error) {
 	query := "SELECT id, name, sku, price FROM products"
+	countQuery := "SELECT COUNT(*) FROM products"
 	var args []interface{}
-	argCount := 1
+	var conditions []string // Store conditions dynamically
 
 	// Add name filtering if provided
 	if name != "" {
-		query += fmt.Sprintf(" WHERE name ILIKE $%d", argCount)
+		conditions = append(conditions, fmt.Sprintf("name ILIKE $%d", len(args)+1))
 		args = append(args, "%"+name+"%")
-		argCount++
 	}
 
-	// Always add pagination
-	query += fmt.Sprintf(" LIMIT $%d OFFSET $%d", argCount, argCount+1)
-	args = append(args, limit, offset) // ✅ Now actually appending values
-
-	log.Printf("[DB_LOG] SQL: %s | ARGS: %+v\n", query, args) // Debugging
-
-	// Execute query
-	rows, err := r.SQLDB.Query(query, args...)
-	if err != nil {
-		log.Println("[DB_ERROR]", err)
-		return nil, err
+	// If any conditions exist, add WHERE clause
+	if len(conditions) > 0 {
+		query += " WHERE " + strings.Join(conditions, " AND ")
+		countQuery += " WHERE " + strings.Join(conditions, " AND ")
 	}
-	defer rows.Close()
 
-	// Parse results
-	var productsList []products.Product
-	for rows.Next() {
-		var p products.Product
-		if err := rows.Scan(&p.ID, &p.Name, &p.Sku, &p.Price); err != nil {
-			return nil, err
+	// Add pagination
+	query += fmt.Sprintf(" LIMIT $%d OFFSET $%d", len(args)+1, len(args)+2)
+	args = append(args, limit, offset)
+
+	// Channels for concurrency
+	countChan := make(chan int, 1)
+	productsChan := make(chan []products.Product, 1)
+	errChan := make(chan error, 2)
+	defer close(countChan)
+	defer close(productsChan)
+	defer close(errChan)
+
+	// Goroutine: Fetch total count
+	go func() {
+		var totalCount int
+		err := r.SQLDB.QueryRow(countQuery, args[:len(args)-2]...).Scan(&totalCount) // Remove limit & offset from args
+		if err != nil {
+			errChan <- err
+			return
 		}
-		productsList = append(productsList, p)
-		fmt.Println(productsList)
+		countChan <- totalCount
+	}()
+
+	// Goroutine: Fetch paginated products
+	go func() {
+		rows, err := r.SQLDB.QueryContext(context.Background(), query, args...)
+		if err != nil {
+			errChan <- err
+			return
+		}
+		defer rows.Close()
+
+		var productsList []products.Product
+		for rows.Next() {
+			var p products.Product
+			if err := rows.Scan(&p.ID, &p.Name, &p.Sku, &p.Price); err != nil {
+				errChan <- err
+				return
+			}
+			productsList = append(productsList, p)
+		}
+
+		if err = rows.Err(); err != nil {
+			errChan <- err
+			return
+		}
+
+		productsChan <- productsList
+	}()
+
+	// Collect results
+	var totalCount int
+	var productsList []products.Product
+	for i := 0; i < 2; i++ {
+		select {
+		case err := <-errChan:
+			log.Printf("[DB_ERROR] %v", err)
+			return nil, err
+		case totalCount = <-countChan:
+		case productsList = <-productsChan:
+		}
 	}
 
-	if err = rows.Err(); err != nil {
-		return nil, err
-	}
-	return productsList, nil
+	// Calculate total pages
+	totalPages := (totalCount + limit - 1) / limit
+
+	// Return response
+	return map[string]interface{}{
+		"products":   productsList,
+		"totalPages": totalPages,
+	}, nil
 }

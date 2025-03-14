@@ -4,8 +4,8 @@ type Service struct {
 	Repo Repository
 }
 
-func (s *Service) GetOrders(limit, offset int) ([]Order, error) {
-	return s.Repo.GetOrders(limit, offset)
+func (s *Service) GetOrders(limit int, offset int, id *int, customerName *string) (map[string]interface{}, error) {
+	return s.Repo.GetOrders(limit, offset, id, customerName)
 }
 
 func (s *Service) GetOrderByID(id int) (Order, error) {

@@ -2,7 +2,7 @@ package products
 
 // Repository defines database operations for products
 type Repository interface {
-	GetProducts(limit, offset int, name string) ([]Product, error)
+	GetProducts(limit, offset int, name string) (map[string]interface{}, error)
 	GetProductByID(id int) (Product, error)
 	//CreateProduct(ctx context.Context, product *Product) error
 	//UpdateProduct(ctx context.Context, product *Product) error
